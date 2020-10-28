@@ -17,7 +17,7 @@
  * Bi-directional Current/Power Monitor with I2C Interface
  * Datasheet: http://www.ti.com/product/ina230
  *
- * Copyright (C) 2012 Lothar Felten <lothar.felten@gmail.com>
+ * Copyright (C) 2012 Lothar Felten <l-felten@ti.com>
  * Thanks to Jan Volkering
  *
  * This program is free software; you can redistribute it and/or modify
@@ -273,7 +273,7 @@ static int ina2xx_get_value(struct ina2xx_data *data, u8 reg,
 		break;
 	case INA2XX_CURRENT:
 		/* signed register, result in mA */
-		val = regval * data->current_lsb_uA;
+		val = (s16)regval * data->current_lsb_uA;
 		val = DIV_ROUND_CLOSEST(val, 1000);
 		break;
 	case INA2XX_CALIBRATION:
@@ -321,8 +321,8 @@ static int ina2xx_set_shunt(struct ina2xx_data *data, long val)
 	mutex_lock(&data->config_lock);
 	data->rshunt = val;
 	data->current_lsb_uA = DIV_ROUND_CLOSEST(dividend, val);
-	data->power_lsb_uW = data->config->power_lsb_factor *
-			     data->current_lsb_uA;
+	data->power_lsb_uW = DIV_ROUND_CLOSEST((data->config->power_lsb_factor *
+			     data->current_lsb_uA), 1000);
 	mutex_unlock(&data->config_lock);
 
 	return 0;
@@ -336,6 +336,7 @@ static ssize_t ina2xx_show_shunt(struct device *dev,
 
 	return snprintf(buf, PAGE_SIZE, "%li\n", data->rshunt);
 }
+
 
 static ssize_t ina2xx_store_shunt(struct device *dev,
 				  struct device_attribute *da,
