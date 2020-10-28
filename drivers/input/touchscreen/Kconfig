@@ -342,6 +342,19 @@ config TOUCHSCREEN_GOODIX
 	  To compile this driver as a module, choose M here: the
 	  module will be called goodix.
 
+config HYN_CST3XX_TOUCHSCREEN_SUPPORT
+        tristate "hyn_cst3xx/cst1XX for touchscreen"
+        depends on I2C
+        default n
+        help
+        Say Y here if you have hyn_cst18868 touch panel GTP_POWER_CTRL_SLEEP.
+
+        If unsure, say N.
+
+        To compile this dirver as a module, choose M here: the
+        module will be called.
+
+
 config TOUCHSCREEN_ILI210X
 	tristate "Ilitek ILI210X based touchscreen"
 	depends on I2C
