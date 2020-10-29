@@ -2174,7 +2174,7 @@ static int cst3xx_pm_suspend(struct device *dev)
 {
 	struct cst3xx_ts_data *ts=NULL;
 	ts=i2c_get_clientdata(g_i2c_client);
-	if(!ts);
+	if(!ts)
 	{
 		printk("%s failed\n",__func__);
 		return -1;
@@ -2348,9 +2348,10 @@ static int cst3xx_ts_get_dt_coords(struct device *dev, char *name,struct cst3xx_
 
 	rc = device_property_read_u32_array(dev, name, coords, 4);
 	dev_dbg(dev, "Return value from of read func: %d, coords: %d %d %d %d", rc, coords[0], coords[1], coords[2], coords[3]);
-	if (rc)
+	if (rc) {
 		dev_err(dev, "Unable to find property %s, error: %d\n", name, rc);
 		return rc;
+	}
 
 	if (!strcmp(name, "hynitron,panel-coords")) {
 		pdata->panel_minx = coords[0];
